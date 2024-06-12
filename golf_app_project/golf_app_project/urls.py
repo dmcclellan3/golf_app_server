@@ -28,11 +28,14 @@ router.register(r'rounds', RoundViewSet)
 router.register(r'holes', HoleViewSet)
 router.register(r'scores', ScoreViewSet)
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('create-user/', create_user),
     path('profile/', get_profile),
     path('token/', TokenObtainPairView.as_view()),
+    path('get-current-round/', get_current_round),
+    path('get-hole/', get_hole),
 
 ]

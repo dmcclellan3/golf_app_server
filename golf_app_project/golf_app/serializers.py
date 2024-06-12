@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import *
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username"]
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
@@ -11,14 +16,17 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = '__all__'
 
-class RoundSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Round
-        fields = '__all__'
-
 class HoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hole
+        fields = '__all__'
+
+class RoundSerializer(serializers.ModelSerializer):
+    course = CourseSerializer()
+    user = UserSerializer()
+    holes = HoleSerializer(many=True)
+    class Meta:
+        model = Round
         fields = '__all__'
 
 class ScoreSerializer(serializers.ModelSerializer):

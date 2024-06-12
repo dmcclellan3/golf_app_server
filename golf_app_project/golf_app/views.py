@@ -48,3 +48,33 @@ class HoleViewSet(viewsets.ModelViewSet):
 class ScoreViewSet(viewsets.ModelViewSet):
     queryset = Score.objects.all()
     serializer_class = ScoreSerializer
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_current_round(request):
+    user = request.user
+    rounds = user.rounds
+    serializer = RoundSerializer(rounds, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_hole(request):
+    user = request.user
+    rounds = Round.objects.filter(user=user)
+    rounds_serialized = RoundSerializer(rounds, many=True)
+    
+    print('User Rounds', rounds_serialized.data)
+    holes = []
+    for round in rounds_serialized.data:
+        if round['holes']:
+            print('ROUND HAS HOLES!', round['holes'])
+            round_holes = round['holes']
+            for h in round_holes:
+                the_golf_hole = Hole.objects.get(id=h['id'])
+                holes.append(the_golf_hole)
+            # holes.extend(round_holes.all())
+    holes_serialized = HoleSerializer(holes, many=True)
+    return Response(holes_serialized.data)
+
+

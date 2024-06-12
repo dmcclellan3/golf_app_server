@@ -18,7 +18,7 @@ class Course(models.Model):
         return self.name
 
 class Round(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rounds')
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     date = models.DateField()
 
@@ -26,7 +26,8 @@ class Round(models.Model):
         return f"{self.user.username} - {self.course.name} on {self.date}"
 
 class Hole(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    round = models.ForeignKey(Round, on_delete=models.CASCADE, related_name='holes', null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='holes')
     hole_number = models.IntegerField()
     par = models.IntegerField()
 

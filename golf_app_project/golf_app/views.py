@@ -59,7 +59,8 @@ def get_current_round(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_hole(request):
+def get_hole(request, pk):
+    print ('GET HOLE!  PK: ', pk)
     user = request.user
     rounds = Round.objects.filter(user=user)
     rounds_serialized = RoundSerializer(rounds, many=True)

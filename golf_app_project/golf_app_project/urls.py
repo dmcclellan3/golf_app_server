@@ -36,6 +36,6 @@ urlpatterns = [
     path('profile/', get_profile),
     path('token/', TokenObtainPairView.as_view()),
     path('get-current-round/', get_current_round),
-    path('get-hole/', get_hole),
+    path('get-hole/<int:pk>/', get_hole),
 
 ]

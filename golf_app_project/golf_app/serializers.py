@@ -23,6 +23,7 @@ class HoleSerializer(serializers.ModelSerializer):
 
 
 class ScoreSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Score
         fields = '__all__'
@@ -31,7 +32,7 @@ class RoundSerializer(serializers.ModelSerializer):
     course = CourseSerializer()
     user = UserSerializer()
     # holes = HoleSerializer(many=True)
-    score = ScoreSerializer()
+    scores = ScoreSerializer(many=True)
     class Meta:
         model = Round
         fields = '__all__'

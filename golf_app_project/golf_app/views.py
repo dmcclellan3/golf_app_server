@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.response import Response
@@ -61,22 +61,38 @@ def get_current_round(request):
 @permission_classes([IsAuthenticated])
 def get_hole(request, pk):
     print ('GET HOLE!  PK: ', pk)
-    user = request.user
-    rounds = Round.objects.filter(user=user)
-    rounds_serialized = RoundSerializer(rounds, many=True)
-    
-    print('User Rounds', rounds_serialized.data)
-    holes = []
-    for round in rounds_serialized.data:
-        if round['holes']:
-            print('ROUND HAS HOLES!', round['holes'])
-            round_holes = round['holes']
-            for h in round_holes:
-                the_golf_hole = Hole.objects.get(id=h['id'])
-                holes.append(the_golf_hole)
-            # holes.extend(round_holes.all())
+    try: # we have a round
+        round = Round.objects.get(pk=pk)
+        print('existing Round', round)
+    except: # we need to create a round
+        round = Round.objects.create(
+            course = Course.objects.get(pk=1), # hard coded to Lakeside
+            user = request.user
+        )
+        print('new round: ', round)
+        
+    course = Course.objects.get(id = round.course.id)
+
+    holes = Hole.objects.filter(course = course)
+
     holes_serialized = HoleSerializer(holes, many=True)
+
     return Response(holes_serialized.data)
+        
+    
+    # round_serialized = RoundSerializer(round)
+    
+    # holes = []
+    # for round in round_serialized.data:
+    #     if round['holes']:
+    #         print('ROUND HAS HOLES!', round['holes'])
+    #         round_holes = round['holes']
+    #         for h in round_holes:
+    #             the_golf_hole = Hole.objects.get(id=h['id'])
+    #             holes.append(the_golf_hole)
+    #         # holes.extend(round_holes.all())
+    # holes_serialized = HoleSerializer(holes, many=True)
+    # return Response(holes_serialized.data)
 
 
 

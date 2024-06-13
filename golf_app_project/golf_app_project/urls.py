@@ -16,7 +16,26 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.urls import path, include
+from golf_app.views import *
+from rest_framework import routers
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView
+)
+router = routers.DefaultRouter()
+router.register(r'courses', CourseViewSet)
+router.register(r'rounds', RoundViewSet)
+router.register(r'holes', HoleViewSet)
+router.register(r'scores', ScoreViewSet)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include(router.urls)),
+    path('create-user/', create_user),
+    path('profile/', get_profile),
+    path('token/', TokenObtainPairView.as_view()),
+    path('get-current-round/', get_current_round),
+    path('get-hole/<int:pk>/', get_hole),
+
 ]

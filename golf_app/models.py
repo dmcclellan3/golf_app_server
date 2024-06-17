@@ -27,7 +27,7 @@ class Round(models.Model):
 
 class Score(models.Model):
     round = models.ForeignKey(Round, on_delete=models.CASCADE, related_name='scores')
-    # hole = models.ForeignKey('Hole', on_delete=models.CASCADE, related_name='holes')
+    hole = models.ForeignKey('Hole', on_delete=models.CASCADE, related_name='holes', null=True)
     strokes = models.IntegerField(null=True)
 
     def __str__(self):

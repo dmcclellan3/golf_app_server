@@ -5,6 +5,11 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -75,24 +80,59 @@ def get_hole(request, pk):
 
     holes = Hole.objects.filter(course = course)
 
-    holes_serialized = HoleSerializer(holes, many=True)
+    
+    scores = []
+    for hole in holes:
+        score = Score.objects.filter(round=round, hole=hole).first()
+        if score:
+            scores.append(score)
+        print('Hole: ', hole)
+        print('Score: ', score)
 
-    return Response(holes_serialized.data)
-        
+    holes_serialized = HoleSerializer(holes, many=True)
+    scores_serialized = ScoreSerializer(scores, many=True)
+    data = {
+        'holes': holes_serialized.data,
+        'strokes' : scores_serialized.data
+    }
+    return Response(data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_score(request):
+    user = request.user
+    data = request.data
+    print('data: ', data)
+    print(data['content'])
+    content = data["content"]
+    print('CONTENT: ', content)
+    hole = content['hole']
+    round = content['round']
+    strokes = content['strokes']
+
+    score = Score.objects.filter(
+        hole=hole,
+        round=round,        
+    ).first()
+    print('SCORE: ', score)
+
+    # score.strokes = content['strokes']
+
+    data = {
+        'round':round,
+        'hole':hole,
+        'strokes':strokes
+    }
+
+    serializer = ScoreSerializer(score, data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
-    # round_serialized = RoundSerializer(round)
-    
-    # holes = []
-    # for round in round_serialized.data:
-    #     if round['holes']:
-    #         print('ROUND HAS HOLES!', round['holes'])
-    #         round_holes = round['holes']
-    #         for h in round_holes:
-    #             the_golf_hole = Hole.objects.get(id=h['id'])
-    #             holes.append(the_golf_hole)
-    #         # holes.extend(round_holes.all())
-    # holes_serialized = HoleSerializer(holes, many=True)
-    # return Response(holes_serialized.data)
+
 
 
 

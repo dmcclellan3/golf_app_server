@@ -37,5 +37,6 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view()),
     path('get-current-round/', get_current_round),
     path('get-hole/<int:pk>/', get_hole),
+    path('create-score/', create_score)
 
 ]

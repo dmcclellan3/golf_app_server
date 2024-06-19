@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for golf-app-server on 2024-06-13T17:26:21-04:00
+# fly.toml app configuration file generated for golf-app-server on 2024-06-19T09:08:19-04:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -25,12 +25,10 @@ console_command = '/code/manage.py shell'
   cpu_kind = 'shared'
   cpus = 1
 
-  [[mounts]]
-  source = 'database_volume'
-  destination = '/mnt/volume_mount'
-
-  [[statics]]
+[[statics]]
   guest_path = '/mnt/volume_mount/media'
   url_prefix = '/media/'
 
-
+[[mounts]]
+  source = 'database_volume'
+  destination = '/mnt/volume_mount'

@@ -46,6 +46,11 @@ CSRF_TRUSTED_ORIGINS = [f"https://{APP_NAME}.fly.dev"]
 
 ALLOWED_HOSTS = ['127.0.0.1', f"{APP_NAME}.fly.dev"]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if APP_NAME:
+  MEDIA_ROOT = '/mnt/volume_mount/media/'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -106,7 +111,9 @@ STORAGES = {
 
 CORS_ALLOWED_ORIGINS = ['http://localhost:8080',
                         'http://localhost:5173',
-                        'https://golf-app-client-wedi-nl21egtkh-dmcclellan3s-projects.vercel.app'
+                        'https://golf-app-client-wedi-nl21egtkh-dmcclellan3s-projects.vercel.app',
+                        'https://golf-app-client-wedi.vercel.app'
+                        'course-caddy.vercel.app'
                         ]
 
 CORS_ALLOW_METHODS = [
@@ -153,7 +160,6 @@ DATABASES = {
     		'NAME': DATABASE_PATH if APP_NAME else BASE_DIR / 'db.sqlite3',
 	}
 }
-
 
 
 # Password validation

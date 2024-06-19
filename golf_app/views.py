@@ -99,6 +99,18 @@ def get_hole(request, pk):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+def create_round(request):
+    user = request.user
+    course_id = request.data.get('course_id')
+    course = Course.objects.get(id=course_id)
+    new_round = Round.objects.create(user=user, course=course)
+    
+    serializer = RoundSerializer(new_round)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_score(request):
     user = request.user
     data = request.data
@@ -131,8 +143,16 @@ def create_score(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_rounds_history(request):
+    user = request.user
+    rounds = Round.objects.filter(user=user).order_by('-date')
+    score = Score.objects.filter()
+    serializer = RoundSerializer(rounds, many=True)
+    return Response(serializer.data)
 
+    
 
 
 

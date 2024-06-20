@@ -39,6 +39,7 @@ urlpatterns = [
     path('get-hole/<int:pk>/', get_hole),
     path('create-score/', create_score),
     path('rounds-history/', get_rounds_history),
-    path('create-round/', create_round)
+    path('create-round/', create_round),
+    path('round-details/<int:round_id>/', get_round_details)
 
 ]

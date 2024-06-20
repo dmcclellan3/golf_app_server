@@ -112,8 +112,8 @@ STORAGES = {
 CORS_ALLOWED_ORIGINS = ['http://localhost:8080',
                         'http://localhost:5173',
                         'https://golf-app-client-wedi-nl21egtkh-dmcclellan3s-projects.vercel.app',
-                        'https://golf-app-client-wedi.vercel.app'
-                        'course-caddy.vercel.app'
+                        'https://golf-app-client-wedi.vercel.app',
+                        'https://course-caddy.vercel.app'
                         ]
 
 CORS_ALLOW_METHODS = [

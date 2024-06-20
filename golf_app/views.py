@@ -152,7 +152,16 @@ def get_rounds_history(request):
     serializer = RoundSerializer(rounds, many=True)
     return Response(serializer.data)
 
-    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_round_details(request, round_id):
+    try:
+        round = Round.objects.get(id=round_id, user=request.user)
+        serializer = RoundSerializer(round)
+        return Response(serializer.data)
+    except Round.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+   
 
 
 

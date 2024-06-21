@@ -121,7 +121,7 @@ def create_score(request):
     hole = content['hole']
     round = content['round']
     strokes = content['strokes']
-
+ 
     score = Score.objects.filter(
         hole=hole,
         round=round,        

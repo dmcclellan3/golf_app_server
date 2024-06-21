@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,15 +23,34 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lkn)qad+hakmelln^q_67(!u$ex_hclg#jitpst2dan!ubiok6'
+
+SECRET_KEY = os.getenv('SECRET_KEY', 'a default-value for local dev')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'local')
 
-ALLOWED_HOSTS = []
+DEBUG = False
+if ENVIRONMENT == 'local':
+  DEBUG = True
+
 
 
 # Application definition
+
+APP_NAME = os.getenv("FLY_APP_NAME", None)
+
+DATABASE_PATH = os.getenv("DATABASE_PATH", None)
+
+CSRF_TRUSTED_ORIGINS = [f"https://{APP_NAME}.fly.dev"]
+
+ALLOWED_HOSTS = ['127.0.0.1', f"{APP_NAME}.fly.dev"]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if APP_NAME:
+  MEDIA_ROOT = '/mnt/volume_mount/media/'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -67,6 +87,7 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -76,8 +97,24 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware'
 ]
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STORAGES = {
+    'default': {
+        'BACKEND': "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+
 CORS_ALLOWED_ORIGINS = ['http://localhost:8080',
-                        'http://localhost:5173']
+                        'http://localhost:5173',
+                        'https://golf-app-client-wedi-nl21egtkh-dmcclellan3s-projects.vercel.app',
+                        'https://golf-app-client-wedi.vercel.app',
+                        'https://course-caddy.vercel.app'
+                        ]
 
 CORS_ALLOW_METHODS = [
     'GET',
@@ -118,10 +155,10 @@ WSGI_APPLICATION = 'golf_app_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+	'default': {
+    		'ENGINE': 'django.db.backends.sqlite3',
+    		'NAME': DATABASE_PATH if APP_NAME else BASE_DIR / 'db.sqlite3',
+	}
 }
 
 

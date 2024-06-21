@@ -23,11 +23,11 @@ class Round(models.Model):
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.course.name} on {self.date}"
+        return f"ID: {self.id} - {self.user.username} - {self.course.name} on {self.date}"
 
 class Score(models.Model):
     round = models.ForeignKey(Round, on_delete=models.CASCADE, related_name='scores')
-    # hole = models.ForeignKey('Hole', on_delete=models.CASCADE, related_name='holes')
+    hole = models.ForeignKey('Hole', on_delete=models.CASCADE, related_name='holes', null=True)
     strokes = models.IntegerField(null=True)
 
     def __str__(self):
@@ -43,4 +43,4 @@ class Hole(models.Model):
     par = models.IntegerField()
 
     def __str__(self):
-        return f"Hole {self.hole_number} (Par {self.par}) - {self.course.name}"
+        return f"ID: {self.id} - Hole {self.hole_number} (Par {self.par}) - {self.course.name}"
